@@ -1,6 +1,6 @@
-// swift-tools-version: 6.0
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// will become 6 as soon as GitHub Actions supports it
 import PackageDescription
 
 let package = Package(
