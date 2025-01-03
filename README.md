@@ -4,6 +4,8 @@
 It draws inspiration from its [C++ equivalent, zq](https://github.com/a4z/zq), adhering to a shared philosophy:
 Provide essential functionality that covers most use cases while remaining flexible and extendable for project-specific needs.
 
+Please note: **szq requires Swift 6**
+
 ---
 
 ## About
