@@ -1,26 +1,28 @@
 import Foundation
 import ZeroMQ
 
+// swiftlint:disable:next todo
 // TODO , this unchecked is probably not awesome, but for get going, do it
 public class Message: @unchecked Sendable {
 
   var msg: zmq_msg_t
 
+  // swiftlint:disable:next todo
   // TODO, do I need that at all?
   public init() {
     msg = zmq_msg_t()
     zmq_msg_init(&msg)
   }
 
-  public init(zmq_msg: zmq_msg_t) {
-    self.msg = zmq_msg
+  public init(zmqMsg: zmq_msg_t) {
+    self.msg = zmqMsg
   }
 
+  // swiftlint:disable:next todo
   // TODO, do I need that at all?
   init(size: Int) throws {
     msg = zmq_msg_t()
-    let rc = zmq_msg_init_size(&msg, size)
-    if rc != 0 {
+    if 0 != zmq_msg_init_size(&msg, size) {
       throw currentZmqError()
     }
   }
@@ -40,7 +42,11 @@ public class Message: @unchecked Sendable {
 }
 
 public func pack<T: ZmqStreamable>(value: T) -> Message? {
-  return Message(zmq_msg: try! T.pack(value: value))
+  do {
+    return Message(zmqMsg: try T.pack(value: value))
+  } catch {
+    return nil
+  }
 }
 public func unpack<T: ZmqStreamable>(message: Message) -> T? {
   return T.unpack(from: &message.msg)

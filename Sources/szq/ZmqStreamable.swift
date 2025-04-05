@@ -10,8 +10,8 @@ extension String: ZmqStreamable {
 
   public static func pack(value: String) throws -> zmq_msg_t {
     var msg = zmq_msg_t()
-    let rc = zmq_msg_init_size(&msg, value.utf8.count)
-    if rc != 0 {
+    let zrc = zmq_msg_init_size(&msg, value.utf8.count)
+    if zrc != 0 {
       throw currentZmqError()
     }
     let data = zmq_msg_data(&msg)
@@ -27,7 +27,7 @@ extension String: ZmqStreamable {
     }
     let buffer = UnsafeBufferPointer(
       start: dataPtr.assumingMemoryBound(to: UInt8.self), count: zmq_msg_size(msgPtr))
-    return String(decoding: buffer, as: UTF8.self)
+    return String(bytes: buffer, encoding: .utf8)
   }
 
 }
@@ -46,8 +46,8 @@ extension ZmqStreamable where Self: BitwiseCopyable {
   public static func pack(value: Self) throws -> zmq_msg_t {
     var msg = zmq_msg_t()
     let size = MemoryLayout<Self>.size
-    let rc = zmq_msg_init_size(&msg, size)
-    if rc != 0 {
+    let zrc = zmq_msg_init_size(&msg, size)
+    if zrc != 0 {
       throw currentZmqError()
     }
     let data = zmq_msg_data(&msg)

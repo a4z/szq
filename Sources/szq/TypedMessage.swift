@@ -8,7 +8,7 @@ public class TypedMessage {
 
   public init<T: ZmqStreamable>(value: T) throws {
     self.type = String(describing: Swift.type(of: value))
-    self.msg = try Message(zmq_msg: T.pack(value: value))
+    self.msg = try Message(zmqMsg: T.pack(value: value))
   }
 
   public init(type: String, message: Message) {
