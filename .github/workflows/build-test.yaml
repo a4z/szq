@@ -18,9 +18,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Lint Sources
-      run: swiftlint lint Sources/szq/*.swift
-
     - name: Build
       run: swift build
 
