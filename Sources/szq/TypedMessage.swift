@@ -1,7 +1,5 @@
-
 import Foundation
 import ZeroMQ
-
 
 public class TypedMessage {
 
@@ -38,7 +36,6 @@ public class TypedMessage {
     return unpack(message: msg)
   }
 }
-
 
 public func send(socket: Socket, message: TypedMessage) throws {
   let msgType = pack(value: message.type)!

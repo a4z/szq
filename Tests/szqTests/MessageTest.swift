@@ -2,13 +2,16 @@ import Testing
 
 @testable import szq
 
-fileprivate struct Point  {
+// swiftlint:disable identifier_name
+private struct Point {
   let x: Int
   let y: Int
 }
+// swiftlint:enable identifier_name
 
-extension Point : ZmqStreamable {}
+extension Point: ZmqStreamable {}
 
+// swiftlint:disable force_try
 
 @Suite("Message Types")
 struct MessageTestSuite {
@@ -48,3 +51,5 @@ struct MessageTestSuite {
   }
 
 }
+
+// swiftlint:enable force_try

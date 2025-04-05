@@ -52,7 +52,7 @@ public enum SocketType {
 }
 
 public enum RecvResult: Error {
-  case no_data
+  case noData
   case overflow(data: [Message])
   case underflow(data: [Message])
 }
@@ -69,12 +69,12 @@ public class Socket {
     zmq_close(socket)
   }
 
-  public func send(_ messages: Message..., dontwait: Bool = true) throws -> Int{
-    let wait_flag = dontwait ? ZMQ_DONTWAIT : 0
-    var sent =  0
+  public func send(_ messages: Message..., dontwait: Bool = true) throws -> Int {
+    let waitFlag = dontwait ? ZMQ_DONTWAIT : 0
+    var sent = 0
     for (index, message) in messages.enumerated() {
       let isLast = index == messages.count - 1
-      let flags = isLast ? wait_flag : ZMQ_SNDMORE
+      let flags = isLast ? waitFlag : ZMQ_SNDMORE
       let rc = zmq_send(socket, message.data, message.size, flags)
       if rc == -1 {
         throw currentZmqError()
@@ -90,11 +90,11 @@ public class Socket {
       let rc = zmq_msg_recv(&message.msg, socket, ZMQ_DONTWAIT)
       if rc == -1 {
         if zmq_errno() == EAGAIN {
-          throw RecvResult.no_data
+          throw RecvResult.noData
         }
         throw currentZmqError()
       }
-    } catch RecvResult.no_data {
+    } catch RecvResult.noData {
       return nil
     } catch {
       throw error
@@ -102,7 +102,7 @@ public class Socket {
     return message
   }
 
-  public func recv_n() throws -> [Message]? {
+  public func recvAll() throws -> [Message]? {
     let msg = try recv()
     if msg == nil {
       return nil
@@ -111,8 +111,8 @@ public class Socket {
     messages.append(msg!)
 
     var more: Int32 = 0
-    var more_size = MemoryLayout<Int32>.size
-    let rc = zmq_getsockopt(socket, ZMQ_RCVMORE, &more, &more_size)
+    var moreSize = MemoryLayout<Int32>.size
+    let rc = zmq_getsockopt(socket, ZMQ_RCVMORE, &more, &moreSize)
     if rc == -1 {
       throw currentZmqError()
     }
@@ -120,9 +120,9 @@ public class Socket {
       if let msg = try recv() {
         messages.append(msg)
       } else {
-        throw RecvResult.no_data
+        throw RecvResult.noData
       }
-      let rc = zmq_getsockopt(socket, ZMQ_RCVMORE, &more, &more_size)
+      let rc = zmq_getsockopt(socket, ZMQ_RCVMORE, &more, &moreSize)
       if rc == -1 {
         throw currentZmqError()
       }
@@ -130,7 +130,7 @@ public class Socket {
     return messages
   }
 
-  public func await_message(timeout: Int) throws -> Bool {
+  public func awaitMessage(timeout: Int) throws -> Bool {
     var item = zmq_pollitem_t(socket: socket, fd: 0, events: Int16(ZMQ_POLLIN), revents: 0)
     let rc = zmq_poll(&item, 1, timeout)
     if rc == -1 {
@@ -141,7 +141,8 @@ public class Socket {
 
   public func linger(milliseconds: Int32) throws {
     var milliseconds = milliseconds
-    let rc = zmq_setsockopt(socket, ZMQ_LINGER, &milliseconds, MemoryLayout.size(ofValue: milliseconds))
+    let rc = zmq_setsockopt(
+      socket, ZMQ_LINGER, &milliseconds, MemoryLayout.size(ofValue: milliseconds))
     if rc == -1 {
       throw currentZmqError()
     }

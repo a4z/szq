@@ -1,5 +1,5 @@
-//let address = "tcp://localhost:5555"
-
+// let address = "tcp://localhost:5555"
+// swiftlint:disable force_try
 import Testing
 import XCTest
 
@@ -27,10 +27,10 @@ struct SocketTestSuite {
     let client = try! ctx.connect(type: .push, url: address)
 
     let msgSend = pack(value: "Hello")!
-    let rc = try! client.send(msgSend)
-    #expect(rc == 5)
+    let zrc = try! client.send(msgSend)
+    #expect(zrc == 5)
 
-    let gotMessage = try server.await_message(timeout: 1000)
+    let gotMessage = try server.awaitMessage(timeout: 1000)
     #expect(gotMessage == true)
 
     let msgReceived = try server.recv()!
@@ -49,8 +49,8 @@ struct SocketTestSuite {
 
     _ = try! client.send(msg1, msg2)
 
-    if try server.await_message(timeout: 1000) {
-      let msgs = try server.recv_n()!
+    if try server.awaitMessage(timeout: 1000) {
+      let msgs = try server.recvAll()!
       #expect(msgs.count == 2)
       let val1 = unpack(message: msgs[0])! as String
       let val2 = unpack(message: msgs[1])! as Double
@@ -64,12 +64,13 @@ struct SocketTestSuite {
   @Test func testSendNoMessage() throws {
     let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
-    //let client = try! ctx.connect(type: .push, url: address)
-    let gotMessage = try server.await_message(timeout: 100)
+    // let client = try! ctx.connect(type: .push, url: address)
+    let gotMessage = try server.awaitMessage(timeout: 100)
     #expect(gotMessage == false)
-    let m = try server.recv()
-    #expect(m == nil)
-    let mn = try server.recv_n()
-    #expect(mn == nil)
+    let msg = try server.recv()
+    #expect(msg == nil)
+    let msgs = try server.recvAll()
+    #expect(msgs == nil)
   }
 }
+// swiftlint:enable force_try

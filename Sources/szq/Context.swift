@@ -1,6 +1,3 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
-
 import Foundation
 import ZeroMQ
 
@@ -45,10 +42,11 @@ public class Context: @unchecked Sendable {
     if socket == nil {
       throw currentZmqError()
     }
-    let rc = zmq_bind(socket, url)
-    if rc != 0 {
+
+    if 0 != zmq_bind(socket, url) {
       throw currentZmqError()
     }
+
     var linger: Int32 = 0
     let rcLinger = zmq_setsockopt(socket, ZMQ_LINGER, &linger, MemoryLayout.size(ofValue: linger))
     if rcLinger != 0 {
@@ -65,8 +63,7 @@ public class Context: @unchecked Sendable {
     if socket == nil {
       throw currentZmqError()
     }
-    let rc = zmq_connect(socket, url)
-    if rc != 0 {
+    if 0 != zmq_connect(socket, url) {
       throw currentZmqError()
     }
 

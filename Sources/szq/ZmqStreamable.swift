@@ -58,7 +58,6 @@ extension ZmqStreamable where Self: BitwiseCopyable {
   }
 }
 
-
 extension Bool: ZmqStreamable {}
 
 extension Int: ZmqStreamable {}

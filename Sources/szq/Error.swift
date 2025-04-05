@@ -1,4 +1,4 @@
-//typealias Error = Int32
+// typealias Error = Int32
 
 import ZeroMQ
 
