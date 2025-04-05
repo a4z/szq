@@ -1,19 +1,19 @@
 //let address = "tcp://localhost:5555"
 
-import XCTest
 import Testing
+import XCTest
+
 @testable import szq
 
 @Suite("SocketTest")
 
-struct SocketTestSuite  {
+struct SocketTestSuite {
 
   let ctx = Context()
 
-  @Test func testLinger()  throws {
-    let  address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
+  @Test func testLinger() throws {
+    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
     let client = try! ctx.connect(type: .push, url: address)
-    #expect(client != nil)
     var linger = try! client.linger()
     #expect(linger == 0)
     try! client.linger(milliseconds: 1000)
@@ -21,9 +21,8 @@ struct SocketTestSuite  {
     #expect(linger == 1000)
   }
 
-
-  @Test func testBasicSendRec()  throws {
-    let  address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
+  @Test func testBasicSendRec() throws {
+    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
     let client = try! ctx.connect(type: .push, url: address)
 
@@ -35,13 +34,13 @@ struct SocketTestSuite  {
     #expect(gotMessage == true)
 
     let msgReceived = try server.recv()!
-    let val = unpack(message:msgReceived)! as String
+    let val = unpack(message: msgReceived)! as String
     #expect(val == "Hello")
 
   }
 
-  @Test func testBasicSendRecN()  throws {
-    let  address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
+  @Test func testBasicSendRecN() throws {
+    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
     let client = try! ctx.connect(type: .push, url: address)
 
@@ -53,8 +52,8 @@ struct SocketTestSuite  {
     if try server.await_message(timeout: 1000) {
       let msgs = try server.recv_n()!
       #expect(msgs.count == 2)
-      let val1 = unpack(message:msgs[0])! as String
-      let val2 = unpack(message:msgs[1])! as Double
+      let val1 = unpack(message: msgs[0])! as String
+      let val2 = unpack(message: msgs[1])! as Double
       #expect(val1 == "Hello")
       #expect(val2 == 1.23)
     } else {
@@ -62,8 +61,8 @@ struct SocketTestSuite  {
     }
   }
 
-   @Test func testSendNoMessage()  throws {
-    let  address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
+  @Test func testSendNoMessage() throws {
+    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
     //let client = try! ctx.connect(type: .push, url: address)
     let gotMessage = try server.await_message(timeout: 100)
@@ -72,5 +71,5 @@ struct SocketTestSuite  {
     #expect(m == nil)
     let mn = try server.recv_n()
     #expect(mn == nil)
-   }
+  }
 }
