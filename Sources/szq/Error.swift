@@ -19,5 +19,6 @@ public func currentZmqError() -> ZmqError {
 enum SzqError: Error {
   case badType
   case invalidContext
-
+  case invalidIdentitySize
+  case invalidKeySize
 }
