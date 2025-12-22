@@ -10,13 +10,18 @@ extension String: ZmqStreamable {
 
   public static func pack(value: String) throws -> zmq_msg_t {
     var msg = zmq_msg_t()
-    let zrc = zmq_msg_init_size(&msg, value.utf8.count)
+    let count = value.utf8.count
+    let zrc = zmq_msg_init_size(&msg, count)
     if zrc != 0 {
       throw currentZmqError()
     }
-    let data = zmq_msg_data(&msg)
-    _ = value.withCString { cStr in
-      memcpy(data, cStr, value.utf8.count)
+    if count > 0 {
+      guard let data = zmq_msg_data(&msg) else {
+        throw currentZmqError()
+      }
+      _ = value.withCString { cStr in
+        memcpy(data, cStr, count)
+      }
     }
     return msg
   }
@@ -41,7 +46,7 @@ extension ZmqStreamable where Self: BitwiseCopyable {
     return dataPtr.withMemoryRebound(to: Self.self, capacity: 1) { pointer in
       return pointer.pointee
     }
-  }
+    }
 
   public static func pack(value: Self) throws -> zmq_msg_t {
     var msg = zmq_msg_t()
@@ -50,9 +55,16 @@ extension ZmqStreamable where Self: BitwiseCopyable {
     if zrc != 0 {
       throw currentZmqError()
     }
-    let data = zmq_msg_data(&msg)
-    _ = withUnsafeBytes(of: value) { bytes in
-      memcpy(data, bytes.baseAddress, size)
+    if size > 0 {
+      guard let data = zmq_msg_data(&msg) else {
+        throw currentZmqError()
+      }
+      withUnsafeBytes(of: value) { bytes in
+        guard let base = bytes.baseAddress else {
+          return
+        }
+        memcpy(data, base, size)
+      }
     }
     return msg
   }
