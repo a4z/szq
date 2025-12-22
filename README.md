@@ -36,4 +36,4 @@ For convenience, it uses the ZeroMQ XCFramework available at [libzmq-xcf](https:
 ## Platform Support
 
 - **Apple Platforms**: Fully supported.
-- **Linux**: Support is in progress and coming soon.
+- **Linux**: Tested on Ubuntu 24.04, see CI for details
