@@ -59,7 +59,7 @@ extension ZmqStreamable where Self: BitwiseCopyable {
       guard let data = zmq_msg_data(&msg) else {
         throw currentZmqError()
       }
-      _ = withUnsafeBytes(of: value) { bytes in
+      withUnsafeBytes(of: value) { bytes in
         guard let base = bytes.baseAddress else {
           return
         }
