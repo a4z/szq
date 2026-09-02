@@ -39,7 +39,7 @@ struct TypedMessageTestSuite {
   }
 
   @Test func testSend() async throws {
-    let address = "ipc:///tmp/zq_test_pipe_TypedMessageSuite\(#line)"
+    let address = "inproc://zq_test_pipe_TypedMessageSuite\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
     let client = try! ctx.connect(type: .push, url: address)
 

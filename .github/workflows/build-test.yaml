@@ -12,9 +12,11 @@ jobs:
       matrix:
         include:
           - os: macOS-15
-            swift: '6.2'
+            swift: '6.3'
           - os: ubuntu-24.04
-            swift: '6.2'
+            swift: '6.3'
+          - os: windows-latest
+            swift: '6.3'
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -28,8 +30,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libzmq3-dev libsodium-dev
 
+    - name: Install ZeroMQ dependencies
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" >> $env:GITHUB_ENV
+        "VCPKG_DEFAULT_TRIPLET=x64-windows-static-md" >> $env:GITHUB_ENV
+
+        & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install zeromq:x64-windows-static-md
+
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Build
       run: swift build

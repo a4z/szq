@@ -12,17 +12,17 @@ struct SocketTestSuite {
   let ctx = Context()
 
   @Test func testLinger() throws {
-    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
-    let client = try! ctx.connect(type: .push, url: address)
-    var linger = try! client.linger()
+    let address = "inproc://zq_test_pipe_SocketTest\(#line)"
+    let socket = try! ctx.bind(type: .pull, url: address)
+    var linger = try! socket.linger()
     #expect(linger == 0)
-    try! client.linger(milliseconds: 1000)
-    linger = try! client.linger()
+    try! socket.linger(milliseconds: 1000)
+    linger = try! socket.linger()
     #expect(linger == 1000)
   }
 
   @Test func testBasicSendRec() throws {
-    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
+    let address = "inproc://zq_test_pipe_SocketTest\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
     let client = try! ctx.connect(type: .push, url: address)
 
@@ -40,7 +40,7 @@ struct SocketTestSuite {
   }
 
   @Test func testBasicSendRecN() throws {
-    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
+    let address = "inproc://zq_test_pipe_SocketTest\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
     let client = try! ctx.connect(type: .push, url: address)
 
@@ -62,7 +62,7 @@ struct SocketTestSuite {
   }
 
   @Test func testSendNoMessage() throws {
-    let address = "ipc:///tmp/zq_test_pipe_SocketTest\(#line)"
+    let address = "inproc://zq_test_pipe_SocketTest\(#line)"
     let server = try! ctx.bind(type: .pull, url: address)
     // let client = try! ctx.connect(type: .push, url: address)
     let gotMessage = try server.awaitMessage(timeout: 100)
