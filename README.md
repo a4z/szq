@@ -37,3 +37,20 @@ For convenience, it uses the ZeroMQ XCFramework available at [libzmq-xcf](https:
 
 - **Apple Platforms**: Fully supported.
 - **Linux**: Tested on Ubuntu 24.04, see CI for details
+- **Windows**: Supported with ZeroMQ from vcpkg.
+
+Recommended Windows setup:
+
+```powershell
+# Optional if vcpkg is not installed in $HOME\vcpkg or C:\vcpkg:
+$env:VCPKG_ROOT = "C:\path\to\vcpkg"
+$env:VCPKG_DEFAULT_TRIPLET = "x64-windows-static-md"
+vcpkg install "zeromq:$env:VCPKG_DEFAULT_TRIPLET"
+swift test
+```
+
+The package checks `VCPKG_ROOT`, `VCPKG_INSTALLATION_ROOT`, `$HOME\vcpkg`,
+`%USERPROFILE%\vcpkg`, and `C:\vcpkg`.
+Plain `vcpkg install zeromq` uses the dynamic `x64-windows` triplet; that
+builds, but executables also need the vcpkg `bin` directory on `PATH` at
+runtime.

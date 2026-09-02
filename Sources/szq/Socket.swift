@@ -133,7 +133,7 @@ public class Socket {
 
   public func awaitMessage(timeout: Int) throws -> Bool {
     var item = zmq_pollitem_t(socket: socket, fd: 0, events: Int16(ZMQ_POLLIN), revents: 0)
-    let zrc = zmq_poll(&item, 1, timeout)
+    let zrc = zmq_poll(&item, 1, CLong(timeout))
     if zrc == -1 {
       throw currentZmqError()
     }
